@@ -1,0 +1,39 @@
+<Window x:Class="Magazyn_WPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Magazyn_WPF"
+        xmlns:views="clr-namespace:Magazyn_WPF.Views"
+        mc:Ignorable="d"
+        Title="Magazyn Produktów" Height="600" Width="1000" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Header/Toolbar -->
+        <StackPanel Grid.Row="0" Background="#1a1a1a" Orientation="Horizontal" VerticalAlignment="Center" Margin="20">
+            <TextBlock Text="Magazyn Produktów" FontSize="24" FontWeight="Bold" Foreground="White" VerticalAlignment="Center"/>
+        </StackPanel>
+
+        <!-- Main Content -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Lista produktów -->
+            <views:ProductListView Grid.Column="0" x:Name="ProductListView"/>
+
+            <!-- Separator -->
+            <GridSplitter Grid.Column="1" Width="5" Background="#cccccc" HorizontalAlignment="Stretch"/>
+
+            <!-- Formularz -->
+            <views:ProductFormView Grid.Column="2" x:Name="ProductFormView"/>
+        </Grid>
+    </Grid>
+</Window>

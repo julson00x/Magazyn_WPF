@@ -1,0 +1,17 @@
+.NET SDK Requirements for Magazyn_WPF
+
+Required:
+- .NET 8.0 SDK or later
+- Windows Desktop Runtime 8.0 (dla WPF)
+
+Installation:
+https://dotnet.microsoft.com/download/dotnet/8.0
+
+Verification:
+dotnet --version
+dotnet --list-runtimes
+
+Project Dependencies:
+- Microsoft.NET.Sdk (included with .NET SDK)
+- WPF support (net8.0-windows target framework)
+- No external NuGet packages required for MVP

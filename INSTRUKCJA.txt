@@ -1,0 +1,19 @@
+URUCHOMIENIE W VS CODE:
+
+Wymagania:
+- .NET 8.0 SDK
+
+Komendy:
+
+1. Przywrócenie pakietów (wymagane raz):
+   dotnet restore
+
+2. Budowanie projektu:
+   dotnet build
+
+3. Uruchomienie aplikacji:
+   dotnet run
+
+4. Czyszczenie build output:
+   dotnet clean
+
