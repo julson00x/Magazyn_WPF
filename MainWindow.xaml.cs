@@ -18,7 +18,6 @@ namespace Magazyn_WPF
 
         private void LoadTestData()
         {
-            // Statyczne dane testowe
             produkty = new List<Produkt>
             {
                 new Produkt
@@ -83,7 +82,6 @@ namespace Magazyn_WPF
                 }
             };
 
-            // Bindowanie danych do DataGrid
             DataGrid productDataGrid = ProductListView.FindName("ProductDataGrid") as DataGrid;
             if (productDataGrid != null)
             {

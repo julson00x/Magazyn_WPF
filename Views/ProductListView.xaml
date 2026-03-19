@@ -6,27 +6,62 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid Background="White">
-        <StackPanel Orientation="Vertical" Margin="20">
-            <TextBlock Text="Lista Produktów" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
-            
-            <DataGrid x:Name="ProductDataGrid" AutoGenerateColumns="False" Margin="0,0,0,20" 
-                      CanUserAddRows="False" CanUserDeleteRows="False">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Nazwa" Binding="{Binding Nazwa}" Width="150"/>
-                    <DataGridTextColumn Header="Kategoria" Binding="{Binding Kategoria}" Width="120"/>
-                    <DataGridTextColumn Header="Ilość" Binding="{Binding Ilość}" Width="80"/>
-                    <DataGridTextColumn Header="Jednostka" Binding="{Binding Jednostka}" Width="100"/>
-                    <DataGridTextColumn Header="Lokalizacja" Binding="{Binding Lokalizacja}" Width="140"/>
-                    <DataGridTextColumn Header="Data Dodania" Binding="{Binding DataDodania, StringFormat=dd/MM/yyyy}" Width="120" IsReadOnly="True"/>
-                </DataGrid.Columns>
-            </DataGrid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
-                <Button Content="Dodaj" Padding="15,10" Margin="0,0,10,0" Background="#4CAF50" Foreground="White" FontSize="14"/>
-                <Button Content="Edytuj" Padding="15,10" Margin="0,0,10,0" Background="#2196F3" Foreground="White" FontSize="14"/>
-                <Button Content="Usuń" Padding="15,10" Margin="0,0,10,0" Background="#F44336" Foreground="White" FontSize="14"/>
+        <TextBlock Text="Lista Produktów" Grid.Row="0" FontSize="20" FontWeight="Bold" Margin="20,20,20,20"/>
+
+        <DataGrid x:Name="ProductDataGrid" Grid.Row="1" AutoGenerateColumns="False" Margin="20,0,20,20" 
+                  CanUserAddRows="False" CanUserDeleteRows="False" MouseDoubleClick="ProductDataGrid_MouseDoubleClick">
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="ToolTip">
+                        <Setter.Value>
+                            <TextBlock TextWrapping="Wrap" MaxWidth="400">
+                                <Run Text="ID: "/>
+                                <Run Text="{Binding Id, Mode=OneWay}"/>
+                                <LineBreak/>
+                                <Run Text="Nazwa: "/>
+                                <Run Text="{Binding Nazwa, Mode=OneWay}"/>
+                                <LineBreak/>
+                                <Run Text="Kategoria: "/>
+                                <Run Text="{Binding Kategoria, Mode=OneWay}"/>
+                                <LineBreak/>
+                                <Run Text="Ilość: "/>
+                                <Run Text="{Binding Ilość, Mode=OneWay}"/>
+                                <Run Text=" "/>
+                                <Run Text="{Binding Jednostka, Mode=OneWay}"/>
+                                <LineBreak/>
+                                <Run Text="Lokalizacja: "/>
+                                <Run Text="{Binding Lokalizacja, Mode=OneWay}"/>
+                                <LineBreak/>
+                                <Run Text="Data dodania: "/>
+                                <Run Text="{Binding DataDodania, StringFormat=dd/MM/yyyy, Mode=OneWay}"/>
+                            </TextBlock>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </DataGrid.RowStyle>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Nazwa" Binding="{Binding Nazwa}" Width="150"/>
+                <DataGridTextColumn Header="Kategoria" Binding="{Binding Kategoria}" Width="120"/>
+                <DataGridTextColumn Header="Ilość" Binding="{Binding Ilość}" Width="80"/>
+                <DataGridTextColumn Header="Jednostka" Binding="{Binding Jednostka}" Width="100"/>
+                <DataGridTextColumn Header="Lokalizacja" Binding="{Binding Lokalizacja}" Width="140"/>
+                <DataGridTextColumn Header="Data Dodania" Binding="{Binding DataDodania, StringFormat=dd/MM/yyyy}" Width="120" IsReadOnly="True"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <Grid Grid.Row="2" Background="#f5f5f5">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="20">
+                <Button x:Name="AddButton" Content="Dodaj" Margin="0,0,10,0" Background="#4CAF50" Click="AddButton_Click" ToolTip="Dodaj nowy produkt"/>
+                <Button x:Name="EditButton" Content="Edytuj" Margin="0,0,10,0" Background="#2196F3" Click="EditButton_Click" ToolTip="Edytuj wybrany produkt"/>
+                <Button x:Name="DeleteButton" Content="Usuń" Margin="0,0,10,0" Background="#F44336" Click="DeleteButton_Click" ToolTip="Usuń wybrany produkt"/>
             </StackPanel>
-        </StackPanel>
+        </Grid>
     </Grid>
 </UserControl>
