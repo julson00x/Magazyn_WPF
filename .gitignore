@@ -1,6 +1,7 @@
 # Build folders
 bin/
 obj/
+publish/
 
 # Visual Studio
 .vs/
@@ -12,6 +13,7 @@ obj/
 *.exe
 *.dll
 *.pdb
+*.config
 
 # Logs
 *.log
