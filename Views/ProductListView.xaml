@@ -1,67 +1,73 @@
 <UserControl x:Class="Magazyn_WPF.Views.ProductListView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid Background="White">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+             mc:Ignorable="d"
+             d:DesignHeight="550" d:DesignWidth="800">
 
-        <TextBlock Text="Lista Produktów" Grid.Row="0" FontSize="20" FontWeight="Bold" Margin="20,20,20,20"/>
+	<Grid Background="White">
+		<Grid.InputBindings>
+			<MouseBinding MouseAction="LeftClick" Command="{Binding ClearSelectionCommand}"/>
+		</Grid.InputBindings>
 
-        <DataGrid x:Name="ProductDataGrid" Grid.Row="1" AutoGenerateColumns="False" Margin="20,0,20,20" 
-                  CanUserAddRows="False" CanUserDeleteRows="False" MouseDoubleClick="ProductDataGrid_MouseDoubleClick">
-            <DataGrid.RowStyle>
-                <Style TargetType="DataGridRow">
-                    <Setter Property="ToolTip">
-                        <Setter.Value>
-                            <TextBlock TextWrapping="Wrap" MaxWidth="400">
-                                <Run Text="ID: "/>
-                                <Run Text="{Binding Id, Mode=OneWay}"/>
-                                <LineBreak/>
-                                <Run Text="Nazwa: "/>
-                                <Run Text="{Binding Nazwa, Mode=OneWay}"/>
-                                <LineBreak/>
-                                <Run Text="Kategoria: "/>
-                                <Run Text="{Binding Kategoria, Mode=OneWay}"/>
-                                <LineBreak/>
-                                <Run Text="Ilość: "/>
-                                <Run Text="{Binding Ilość, Mode=OneWay}"/>
-                                <Run Text=" "/>
-                                <Run Text="{Binding Jednostka, Mode=OneWay}"/>
-                                <LineBreak/>
-                                <Run Text="Lokalizacja: "/>
-                                <Run Text="{Binding Lokalizacja, Mode=OneWay}"/>
-                                <LineBreak/>
-                                <Run Text="Data dodania: "/>
-                                <Run Text="{Binding DataDodania, StringFormat=dd/MM/yyyy, Mode=OneWay}"/>
-                            </TextBlock>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </DataGrid.RowStyle>
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Nazwa" Binding="{Binding Nazwa}" Width="150"/>
-                <DataGridTextColumn Header="Kategoria" Binding="{Binding Kategoria}" Width="120"/>
-                <DataGridTextColumn Header="Ilość" Binding="{Binding Ilość}" Width="80"/>
-                <DataGridTextColumn Header="Jednostka" Binding="{Binding Jednostka}" Width="100"/>
-                <DataGridTextColumn Header="Lokalizacja" Binding="{Binding Lokalizacja}" Width="140"/>
-                <DataGridTextColumn Header="Data Dodania" Binding="{Binding DataDodania, StringFormat=dd/MM/yyyy}" Width="120" IsReadOnly="True"/>
-            </DataGrid.Columns>
-        </DataGrid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="Auto"/>
+		</Grid.RowDefinitions>
 
-        <Grid Grid.Row="2" Background="#f5f5f5">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="20">
-                <Button x:Name="AddButton" Content="Dodaj" Margin="0,0,10,0" Background="#4CAF50" Click="AddButton_Click" ToolTip="Dodaj nowy produkt"/>
-                <Button x:Name="EditButton" Content="Edytuj" Margin="0,0,10,0" Background="#2196F3" Click="EditButton_Click" ToolTip="Edytuj wybrany produkt"/>
-                <Button x:Name="DeleteButton" Content="Usuń" Margin="0,0,10,0" Background="#F44336" Click="DeleteButton_Click" ToolTip="Usuń wybrany produkt"/>
-            </StackPanel>
-        </Grid>
-    </Grid>
+		<Grid Grid.Row="0" Margin="20,20,20,10">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="300"/>
+			</Grid.ColumnDefinitions>
+
+			<TextBlock Grid.Column="0" Text="Lista Produktów" FontSize="20" FontWeight="Bold" VerticalAlignment="Center"/>
+
+			<StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+				<TextBlock Text="🔍 Szukaj:" FontSize="14" FontWeight="SemiBold" Foreground="#555" VerticalAlignment="Center" Margin="0,0,10,0"/>
+
+				<TextBox Width="200" Height="30" Padding="5,0" FontSize="14" VerticalContentAlignment="Center"
+                         Text="{Binding WyszukiwanaFraza, UpdateSourceTrigger=PropertyChanged}"/>
+			</StackPanel>
+		</Grid>
+
+		<Border Grid.Row="1" Background="#E3F2FD" BorderBrush="#2196F3" BorderThickness="1" CornerRadius="8" Margin="20,0,20,15" Padding="15">
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+
+				<TextBlock Text="Liczba różnych produktów: " FontSize="16" FontWeight="SemiBold" Foreground="#333"/>
+				<TextBlock Text="{Binding LiczbaProduktow}" FontSize="18" FontWeight="Bold" Foreground="#1565C0" Margin="0,0,40,0"/>
+
+				<TextBlock Text="Całkowita ilość sztuk/litrów w magazynie: " FontSize="16" FontWeight="SemiBold" Foreground="#333"/>
+				<TextBlock Text="{Binding CalkowitaIloscWmagazynie}" FontSize="18" FontWeight="Bold" Foreground="#1565C0"/>
+
+			</StackPanel>
+		</Border>
+		<DataGrid x:Name="ProductDataGrid" Grid.Row="2"
+                  AutoGenerateColumns="False" Margin="20,0,20,20"
+                  CanUserAddRows="False" CanUserDeleteRows="False"
+                  ItemsSource="{Binding Produkty}"
+                  SelectedItem="{Binding WybranyProdukt}">
+			<DataGrid.Columns>
+				<DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50" IsReadOnly="True"/>
+				<DataGridTextColumn Header="Nazwa" Binding="{Binding Nazwa}" Width="150"/>
+				<DataGridTextColumn Header="Kategoria" Binding="{Binding Kategoria}" Width="120"/>
+				<DataGridTextColumn Header="Ilość" Binding="{Binding Ilość}" Width="80"/>
+				<DataGridTextColumn Header="Jednostka" Binding="{Binding Jednostka}" Width="100"/>
+				<DataGridTextColumn Header="Lokalizacja" Binding="{Binding Lokalizacja}" Width="140"/>
+				<DataGridTextColumn Header="Data Dodania" Binding="{Binding DataDodania, StringFormat=dd/MM/yyyy}" Width="120" IsReadOnly="True"/>
+			</DataGrid.Columns>
+		</DataGrid>
+
+		<Grid Grid.Row="3" Background="#f5f5f5">
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="20">
+				<Button Content="Dodaj" Margin="0,0,10,0" Padding="15,5" Background="#4CAF50" Foreground="White" Command="{Binding AddCommand}" ToolTip="Dodaj nowy produkt"/>
+				<Button Content="Edytuj" Margin="0,0,10,0" Padding="15,5" Background="#2196F3" Foreground="White" Command="{Binding EditCommand}" ToolTip="Edytuj wybrany produkt"/>
+				<Button Content="Usuń" Margin="0,0,10,0" Padding="15,5" Background="#F44336" Foreground="White" Command="{Binding DeleteCommand}" ToolTip="Usuń wybrany produkt"/>
+			</StackPanel>
+		</Grid>
+
+	</Grid>
 </UserControl>
