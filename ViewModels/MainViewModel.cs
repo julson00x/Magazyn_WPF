@@ -4,7 +4,9 @@ using System.Linq;
 using System.Windows.Input;
 using Magazyn_WPF.Models;
 using Magazyn_WPF.ViewModels.Base;
-using Magazyn_WPF.Views; // Dodane, aby ViewModel widzia³ ProductFormWindow
+using Magazyn_WPF.Views;
+using System.ComponentModel;
+using System.Windows.Data;
 
 namespace Magazyn_WPF.ViewModels
 {
@@ -24,7 +26,40 @@ namespace Magazyn_WPF.ViewModels
 			get => _wybranyProdukt;
 			set => SetProperty(ref _wybranyProdukt, value);
 		}
+		// --- NASZE NOWE STATYSTYKI (Krok 1) ---
 
+		// Pojemnik na liczbê ró¿nych produktów (ile jest wierszy)
+		private int _liczbaProduktow;
+		public int LiczbaProduktow
+		{
+			get => _liczbaProduktow;
+			set => SetProperty(ref _liczbaProduktow, value);
+		}
+		// Pojemnik na sumê wszystkich sztuk/litrów w magazynie
+		private int _calkowitaIloscWmagazynie;
+		public int CalkowitaIloscWmagazynie
+		{
+			get => _calkowitaIloscWmagazynie;
+			set => SetProperty(ref _calkowitaIloscWmagazynie, value);
+		}
+
+		// ---------------------------------------
+		// --- ETAP 2: WYSZUKIWARKA ---
+		private string _wyszukiwanaFraza = string.Empty;
+		public string WyszukiwanaFraza
+		{
+			get => _wyszukiwanaFraza;
+			set
+			{
+				// Jeœli tekst siê zmieni (u¿ytkownik wpisze now¹ literê)
+				if (SetProperty(ref _wyszukiwanaFraza, value))
+				{
+					// KROK 2: Dajemy znaæ WPF-owi, ¿eby odœwie¿y³ widok i przefiltrowa³ tabelê
+					CollectionViewSource.GetDefaultView(Produkty).Refresh();
+				}
+			}
+		}
+		//--------------------------------
 		// Komendy CRUD
 		public ICommand DeleteCommand { get; }
 		public ICommand AddCommand { get; }
@@ -43,6 +78,9 @@ namespace Magazyn_WPF.ViewModels
 			AddCommand = new RelayCommand(AddProduct);
 			EditCommand = new RelayCommand(EditProduct, CanModifyProduct);
 			ClearSelectionCommand = new RelayCommand(ClearSelection);
+
+			// Zapinamy nasz filtr do g³ównej listy Produktów
+			CollectionViewSource.GetDefaultView(Produkty).Filter = FiltrujProdukty;
 		}
 
 
@@ -59,6 +97,7 @@ namespace Magazyn_WPF.ViewModels
 
 				// Dodajemy do kolekcji - UI odœwie¿y siê SAMO!
 				Produkty.Add(produkt);
+				PrzeliczStatystyki();
 			}
 		}
 
@@ -76,6 +115,7 @@ namespace Magazyn_WPF.ViewModels
 				// Poniewa¿ pracujemy na ObservableCollection i zrobiliœmy binding, 
 				// zmiana w³aœciwoœci w obiekcie mo¿e wymagaæ wymuszenia odœwie¿enia widoku
 				// (w uproszczonym MVP na tym etapie wystarczy, ¿e dane w oknie siê zapisz¹)
+				PrzeliczStatystyki();
 			}
 		}
 
@@ -90,9 +130,36 @@ namespace Magazyn_WPF.ViewModels
 			if (WybranyProdukt != null)
 			{
 				Produkty.Remove(WybranyProdukt);
+				PrzeliczStatystyki();
 			}
 		}
+		// --- KROK 2: Metoda licz¹ca statystyki ---
+		private void PrzeliczStatystyki()
+		{
+			if (Produkty == null) return;
 
+			// U¿ywamy LINQ do b³yskawicznych obliczeñ:
+			// .Count zlicza ile mamy wierszy
+			LiczbaProduktow = Produkty.Count;
+
+			// .Sum przechodzi po ka¿dym produkcie (p) i dodaje do siebie ich w³aœciwoœæ "Iloœæ"
+			CalkowitaIloscWmagazynie = Produkty.Sum(p => p.Iloœæ);
+		}
+		// KROK 3: Logika filtrowania (Zwraca TRUE jeœli pokazaæ produkt, FALSE jeœli ukryæ)
+		private bool FiltrujProdukty(object obj)
+		{
+			if (obj is Produkt produkt)
+			{
+				// Jeœli pole wyszukiwania jest puste - poka¿ wszystko
+				if (string.IsNullOrWhiteSpace(WyszukiwanaFraza))
+					return true;
+
+				// Szukamy po nazwie lub kategorii (ignorujemy wielkoœæ liter)
+				return produkt.Nazwa.Contains(WyszukiwanaFraza, StringComparison.OrdinalIgnoreCase) ||
+					   produkt.Kategoria.Contains(WyszukiwanaFraza, StringComparison.OrdinalIgnoreCase);
+			}
+			return false;
+		}
 		private void LoadTestData()
 		{
 			Produkty = new ObservableCollection<Produkt>
@@ -101,11 +168,13 @@ namespace Magazyn_WPF.ViewModels
 				new Produkt { Id = 2, Nazwa = "Klej monta¿owy", Kategoria = "Materia³y budowlane", Iloœæ = 25, Jednostka = "l", Lokalizacja = "Pó³ka B3", DataDodania = DateTime.Now.AddDays(-15) },
 				new Produkt { Id = 3, Nazwa = "Lampka LED", Kategoria = "Elektronika", Iloœæ = 120, Jednostka = "szt.", Lokalizacja = "Rega³ C2", DataDodania = DateTime.Now.AddDays(-7) }
 			};
+			PrzeliczStatystyki();
 		}
 
 		private void ClearSelection(object? obj)
 		{
 			WybranyProdukt = null; // Ustawienie na null automatycznie zablokuje przyciski Usuñ/Edytuj!
 		}
+
 	}
 }
