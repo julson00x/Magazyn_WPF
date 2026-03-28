@@ -26,16 +26,14 @@ namespace Magazyn_WPF.ViewModels
 			get => _wybranyProdukt;
 			set => SetProperty(ref _wybranyProdukt, value);
 		}
-		// --- NASZE NOWE STATYSTYKI (Krok 1) ---
-
-		// Pojemnik na liczbê ró¿nych produktów (ile jest wierszy)
+		
 		private int _liczbaProduktow;
 		public int LiczbaProduktow
 		{
 			get => _liczbaProduktow;
 			set => SetProperty(ref _liczbaProduktow, value);
 		}
-		// Pojemnik na sumê wszystkich sztuk/litrów w magazynie
+		
 		private int _calkowitaIloscWmagazynie;
 		public int CalkowitaIloscWmagazynie
 		{
@@ -43,23 +41,23 @@ namespace Magazyn_WPF.ViewModels
 			set => SetProperty(ref _calkowitaIloscWmagazynie, value);
 		}
 
-		// ---------------------------------------
-		// --- ETAP 2: WYSZUKIWARKA ---
+	
+		//  WYSZUKIWARKA
 		private string _wyszukiwanaFraza = string.Empty;
 		public string WyszukiwanaFraza
 		{
 			get => _wyszukiwanaFraza;
 			set
 			{
-				// Jeœli tekst siê zmieni (u¿ytkownik wpisze now¹ literê)
+				
 				if (SetProperty(ref _wyszukiwanaFraza, value))
 				{
-					// KROK 2: Dajemy znaæ WPF-owi, ¿eby odœwie¿y³ widok i przefiltrowa³ tabelê
+					
 					CollectionViewSource.GetDefaultView(Produkty).Refresh();
 				}
 			}
 		}
-		//--------------------------------
+		
 		// Komendy CRUD
 		public ICommand DeleteCommand { get; }
 		public ICommand AddCommand { get; }
@@ -79,47 +77,43 @@ namespace Magazyn_WPF.ViewModels
 			EditCommand = new RelayCommand(EditProduct, CanModifyProduct);
 			ClearSelectionCommand = new RelayCommand(ClearSelection);
 
-			// Zapinamy nasz filtr do g³ównej listy Produktów
+			
 			CollectionViewSource.GetDefaultView(Produkty).Filter = FiltrujProdukty;
 		}
 
 
-		// --- LOGIKA DODAWANIA (Punkt 6) ---
+		// LOGIKA DODAWANIA 
 		private void AddProduct(object? obj)
 		{
 			var formWindow = new ProductFormWindow();
 			if (formWindow.ShowDialog() == true)
 			{
 				var produkt = formWindow.Produkt;
-				// Generowanie nowego ID
+				
 				produkt.Id = Produkty.Any() ? Produkty.Max(p => p.Id) + 1 : 1;
 				produkt.DataDodania = DateTime.Now;
 
-				// Dodajemy do kolekcji - UI odœwie¿y siê SAMO!
+				
 				Produkty.Add(produkt);
 				PrzeliczStatystyki();
 			}
 		}
 
-		// --- LOGIKA EDYCJI (Punkt 7) ---
+		// LOGIKA EDYCJI 
 		private void EditProduct(object? obj)
 		{
 			if (WybranyProdukt == null) return;
 
-			// Klonujemy obiekt, ¿eby nie zmieniaæ danych w tabeli zanim ktoœ kliknie "Zapisz"
-			// Uwaga: w ProductFormWindow musisz mieæ konstruktor przyjmuj¹cy Produkt!
+			
 			var formWindow = new ProductFormWindow(WybranyProdukt);
 			if (formWindow.ShowDialog() == true)
 			{
-				// W prawdziwym œrodowisku tutaj nast¹pi³by update w bazie danych.
-				// Poniewa¿ pracujemy na ObservableCollection i zrobiliœmy binding, 
-				// zmiana w³aœciwoœci w obiekcie mo¿e wymagaæ wymuszenia odœwie¿enia widoku
-				// (w uproszczonym MVP na tym etapie wystarczy, ¿e dane w oknie siê zapisz¹)
 				PrzeliczStatystyki();
 			}
 		}
 
-		// Wspólna metoda sprawdzaj¹ca czy coœ jest zaznaczone (dla Usuñ i Edytuj)
+		// metoda sprawdzaj¹ca czy coœ jest zaznaczone 
+
 		private bool CanModifyProduct(object? obj)
 		{
 			return WybranyProdukt != null;
@@ -133,24 +127,27 @@ namespace Magazyn_WPF.ViewModels
 				PrzeliczStatystyki();
 			}
 		}
-		// --- KROK 2: Metoda licz¹ca statystyki ---
+
+		//  Metoda licz¹ca statystyki
+
 		private void PrzeliczStatystyki()
 		{
 			if (Produkty == null) return;
 
-			// U¿ywamy LINQ do b³yskawicznych obliczeñ:
-			// .Count zlicza ile mamy wierszy
+			
 			LiczbaProduktow = Produkty.Count;
 
-			// .Sum przechodzi po ka¿dym produkcie (p) i dodaje do siebie ich w³aœciwoœæ "Iloœæ"
+			
 			CalkowitaIloscWmagazynie = Produkty.Sum(p => p.Iloœæ);
 		}
-		// KROK 3: Logika filtrowania (Zwraca TRUE jeœli pokazaæ produkt, FALSE jeœli ukryæ)
+
+		// Logika filtrowania (Zwraca TRUE jeœli pokazaæ produkt, FALSE jeœli ukryæ)
+
 		private bool FiltrujProdukty(object obj)
 		{
 			if (obj is Produkt produkt)
 			{
-				// Jeœli pole wyszukiwania jest puste - poka¿ wszystko
+				
 				if (string.IsNullOrWhiteSpace(WyszukiwanaFraza))
 					return true;
 
@@ -164,7 +161,7 @@ namespace Magazyn_WPF.ViewModels
 		{
 			Produkty = new ObservableCollection<Produkt>
 			{
-                // ================= NARZÊDZIA =================
+                //  NARZÊDZIA
 				new Produkt { Id = 1, Nazwa = "Œruba M8", Kategoria = "Narzêdzia", Iloœæ = 500, Jednostka = "szt.", Lokalizacja = "Pó³ka A1", DataDodania = DateTime.Now.AddDays(-30) },
 				new Produkt { Id = 2, Nazwa = "M³otek ciesielski", Kategoria = "Narzêdzia", Iloœæ = 15, Jednostka = "szt.", Lokalizacja = "Pó³ka A2", DataDodania = DateTime.Now.AddDays(-45) },
 				new Produkt { Id = 3, Nazwa = "Wiertarka udarowa", Kategoria = "Narzêdzia", Iloœæ = 8, Jednostka = "szt.", Lokalizacja = "Rega³ B1", DataDodania = DateTime.Now.AddDays(-10) },
@@ -183,7 +180,7 @@ namespace Magazyn_WPF.ViewModels
 				new Produkt { Id = 29, Nazwa = "Imad³o œlusarskie", Kategoria = "Narzêdzia", Iloœæ = 4, Jednostka = "szt.", Lokalizacja = "Stó³ 1", DataDodania = DateTime.Now.AddDays(-200) },
 				new Produkt { Id = 30, Nazwa = "Nitownica rêczna", Kategoria = "Narzêdzia", Iloœæ = 14, Jednostka = "szt.", Lokalizacja = "Pó³ka A8", DataDodania = DateTime.Now.AddDays(-80) },
 
-                // ================= MATERIA£Y BUDOWLANE =================
+                //MATERIA£Y BUDOWLANE 
 				new Produkt { Id = 8, Nazwa = "Klej monta¿owy", Kategoria = "Materia³y budowlane", Iloœæ = 25, Jednostka = "l", Lokalizacja = "Pó³ka C1", DataDodania = DateTime.Now.AddDays(-15) },
 				new Produkt { Id = 9, Nazwa = "Pianka poliuretanowa", Kategoria = "Materia³y budowlane", Iloœæ = 40, Jednostka = "szt.", Lokalizacja = "Pó³ka C2", DataDodania = DateTime.Now.AddDays(-8) },
 				new Produkt { Id = 10, Nazwa = "Cement 25kg", Kategoria = "Materia³y budowlane", Iloœæ = 100, Jednostka = "worek", Lokalizacja = "Paleta 1", DataDodania = DateTime.Now.AddDays(-2) },
@@ -201,7 +198,7 @@ namespace Magazyn_WPF.ViewModels
 				new Produkt { Id = 39, Nazwa = "Ko³ki rozporowe 8x40", Kategoria = "Materia³y budowlane", Iloœæ = 500, Jednostka = "op.", Lokalizacja = "Pó³ka C8", DataDodania = DateTime.Now.AddDays(-100) },
 				new Produkt { Id = 40, Nazwa = "Papa dachowa termozgrzewalna", Kategoria = "Materia³y budowlane", Iloœæ = 25, Jednostka = "rolka", Lokalizacja = "Hala C", DataDodania = DateTime.Now.AddDays(-40) },
 
-                // ================= ELEKTRONIKA =================
+                //  ELEKTRONIKA 
 				new Produkt { Id = 14, Nazwa = "Lampka LED", Kategoria = "Elektronika", Iloœæ = 120, Jednostka = "szt.", Lokalizacja = "Rega³ D1", DataDodania = DateTime.Now.AddDays(-7) },
 				new Produkt { Id = 15, Nazwa = "Przewód YDYp 3x1.5", Kategoria = "Elektronika", Iloœæ = 500, Jednostka = "m", Lokalizacja = "Bêben 1", DataDodania = DateTime.Now.AddDays(-1) },
 				new Produkt { Id = 16, Nazwa = "Gniazdko podwójne", Kategoria = "Elektronika", Iloœæ = 85, Jednostka = "szt.", Lokalizacja = "Pó³ka D2", DataDodania = DateTime.Now.AddDays(-14) },
@@ -218,7 +215,7 @@ namespace Magazyn_WPF.ViewModels
 				new Produkt { Id = 49, Nazwa = "Prze³¹cznik schodowy", Kategoria = "Elektronika", Iloœæ = 45, Jednostka = "szt.", Lokalizacja = "Pó³ka D8", DataDodania = DateTime.Now.AddDays(-6) },
 				new Produkt { Id = 50, Nazwa = "Taœma izolacyjna", Kategoria = "Elektronika", Iloœæ = 180, Jednostka = "szt.", Lokalizacja = "Szuflada E3", DataDodania = DateTime.Now.AddDays(-2) },
 
-                // ================= INNE / MEBLE =================
+                //  INNE / MEBLE 
 				new Produkt { Id = 19, Nazwa = "Rêkawice robocze", Kategoria = "Inne", Iloœæ = 150, Jednostka = "para", Lokalizacja = "Pó³ka F1", DataDodania = DateTime.Now.AddDays(-40) },
 				new Produkt { Id = 20, Nazwa = "Stó³ warsztatowy", Kategoria = "Meble", Iloœæ = 3, Jednostka = "szt.", Lokalizacja = "Hala A", DataDodania = DateTime.Now.AddDays(-90) },
 				new Produkt { Id = 51, Nazwa = "Krzes³o warsztatowe obrotowe", Kategoria = "Meble", Iloœæ = 5, Jednostka = "szt.", Lokalizacja = "Hala A", DataDodania = DateTime.Now.AddDays(-20) },
@@ -233,13 +230,13 @@ namespace Magazyn_WPF.ViewModels
 				new Produkt { Id = 60, Nazwa = "Nauszniki przeciwha³asowe", Kategoria = "Inne", Iloœæ = 22, Jednostka = "szt.", Lokalizacja = "Pó³ka F5", DataDodania = DateTime.Now.AddDays(-18) }
 			};
 
-			// Nie zapominamy o przeliczeniu statystyk na starcie!
+			
 			PrzeliczStatystyki();
 		}
 
 		private void ClearSelection(object? obj)
 		{
-			WybranyProdukt = null; // Ustawienie na null automatycznie zablokuje przyciski Usuñ/Edytuj!
+			WybranyProdukt = null; 
 		}
 
 	}

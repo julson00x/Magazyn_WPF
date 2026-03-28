@@ -11,7 +11,6 @@ namespace Magazyn_WPF.Converters
         {
             if (value is int ilosc)
             {
-                // Jeœli mniej ni¿ 5 sztuk - kolor czerwony, w przeciwnym razie domyœlny (czarny/ciemny)
                 return ilosc < 5 ? Brushes.Red : Brushes.Black;
             }
             return Brushes.Black;

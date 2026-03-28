@@ -8,9 +8,6 @@ namespace Magazyn_WPF
         public MainWindow()
         {
             InitializeComponent();
-
-            // Punkt 4: Ustawienie DataContext. 
-            // Od teraz to MainViewModel dostarcza dane i logikę dla całego okna.
             DataContext = new MainViewModel();
         }
     }

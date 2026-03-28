@@ -21,3 +21,5 @@ namespace Magazyn_WPF.ViewModels.Base
         }
     }
 }
+// to klasa bazowa dla wszystkich ViewModeli w aplikacji, implementuj¹ca interfejs INotifyPropertyChanged.
+// Umo¿liwia powiadamianie interfejsu u¿ytkownika o zmianach w³aœciwoœci, co jest kluczowe dla aktualizacji danych wyœwietlanych na ekranie.

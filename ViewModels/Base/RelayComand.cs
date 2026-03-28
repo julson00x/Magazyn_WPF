@@ -25,3 +25,6 @@ namespace Magazyn_WPF.ViewModels.Base
         }
     }
 }
+//------ Odpowiada za powiazanie logiki biznesowej z interfejsem uzytkownika, pozwala na wykonywanie akcji w odpowiedzi
+//------ na zdarzenia UI, takie jak klikniêcia przycisków. RelayCommand implementuje interfejs ICommand,
+// ------ co umo¿liwia jego u¿ycie w XAML do powi¹zania z elementami interfejsu u¿ytkownika. 
