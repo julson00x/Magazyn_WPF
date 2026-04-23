@@ -1,77 +1,106 @@
 <Window x:Class="Magazyn_WPF.Views.ProductFormWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Formularz Produktu" Height="550" Width="500" WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
-    <Grid Background="White">
-        <Grid Margin="30" VerticalAlignment="Stretch">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
+        Title="Formularz Produktu" Height="620" Width="500"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+	<Grid Background="White">
+		<Grid Margin="30">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="*"/>
+				<RowDefinition Height="Auto"/>
+			</Grid.RowDefinitions>
 
-            <TextBlock Text="Formularz Produktu" Grid.Row="0" FontSize="20" FontWeight="Bold" Margin="0,0,0,20"/>
+			<TextBlock Text="Formularz Produktu" Grid.Row="0"
+                       FontSize="20" FontWeight="Bold" Margin="0,0,0,20"/>
 
-            <Grid Grid.Row="1" Margin="0,0,0,15">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="150"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Text="Nazwa:" Grid.Column="0" VerticalAlignment="Center"/>
-                <TextBox x:Name="NazwaTextBox" Grid.Column="1"/>
-            </Grid>
+			<!-- NAZWA -->
+			<Grid Grid.Row="1" Margin="0,0,0,2">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="150"/>
+					<ColumnDefinition Width="*"/>
+				</Grid.ColumnDefinitions>
+				<TextBlock Text="Nazwa:" Grid.Column="0" VerticalAlignment="Center"/>
+				<TextBox Grid.Column="1" Height="32" Padding="5,0" VerticalContentAlignment="Center"
+                         Text="{Binding Nazwa, UpdateSourceTrigger=PropertyChanged}"/>
+			</Grid>
+			<TextBlock Grid.Row="2" Text="{Binding NazwaError}" Foreground="Red" FontSize="11"
+                       Margin="150,0,0,8" Visibility="{Binding NazwaError, Converter={StaticResource StringToVisibilityConverter}}"/>
 
-            <Grid Grid.Row="2" Margin="0,0,0,15">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="150"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Text="Kategoria:" Grid.Column="0" VerticalAlignment="Center"/>
-                <ComboBox x:Name="KategoriaComboBox" Grid.Column="1">
-                    <ComboBoxItem>Elektronika</ComboBoxItem>
-                    <ComboBoxItem>Narzędzia</ComboBoxItem>
-                    <ComboBoxItem>Meble</ComboBoxItem>
-                    <ComboBoxItem>Materiały budowlane</ComboBoxItem>
-                    <ComboBoxItem>Inne</ComboBoxItem>
-                </ComboBox>
-            </Grid>
+			<!-- KATEGORIA -->
+			<Grid Grid.Row="3" Margin="0,0,0,2">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="150"/>
+					<ColumnDefinition Width="*"/>
+				</Grid.ColumnDefinitions>
+				<TextBlock Text="Kategoria:" Grid.Column="0" VerticalAlignment="Center"/>
+				<ComboBox Grid.Column="1" Height="32"
+                          ItemsSource="{Binding Kategorie}"
+                          SelectedItem="{Binding WybranaKategoria}"/>
+			</Grid>
+			<TextBlock Grid.Row="4" Text="{Binding KategoriaError}" Foreground="Red" FontSize="11"
+                       Margin="150,0,0,8" Visibility="{Binding KategoriaError, Converter={StaticResource StringToVisibilityConverter}}"/>
 
-            <Grid Grid.Row="3" Margin="0,0,0,15">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="150"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Text="Ilość:" Grid.Column="0" VerticalAlignment="Center"/>
-                <TextBox x:Name="IlośćTextBox" Grid.Column="1"/>
-            </Grid>
+			<!-- ILOŚĆ -->
+			<Grid Grid.Row="5" Margin="0,0,0,2">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="150"/>
+					<ColumnDefinition Width="*"/>
+				</Grid.ColumnDefinitions>
+				<TextBlock Text="Ilość:" Grid.Column="0" VerticalAlignment="Center"/>
+				<TextBox Grid.Column="1" Height="32" Padding="5,0" VerticalContentAlignment="Center"
+                         Text="{Binding IloscText, UpdateSourceTrigger=PropertyChanged}"/>
+			</Grid>
+			<TextBlock Grid.Row="6" Text="{Binding IloscError}" Foreground="Red" FontSize="11"
+                       Margin="150,0,0,8" Visibility="{Binding IloscError, Converter={StaticResource StringToVisibilityConverter}}"/>
 
-            <Grid Grid.Row="4" Margin="0,0,0,15">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="150"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Text="Jednostka:" Grid.Column="0" VerticalAlignment="Center"/>
-                <TextBox x:Name="JednostkaTextBox" Grid.Column="1"/>
-            </Grid>
+			<!-- JEDNOSTKA -->
+			<Grid Grid.Row="7" Margin="0,0,0,2">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="150"/>
+					<ColumnDefinition Width="*"/>
+				</Grid.ColumnDefinitions>
+				<TextBlock Text="Jednostka:" Grid.Column="0" VerticalAlignment="Center"/>
+				<ComboBox Grid.Column="1" Height="32"
+                          ItemsSource="{Binding Jednostki}"
+                          SelectedItem="{Binding WybranaJednostka}"/>
+			</Grid>
+			<TextBlock Grid.Row="8" Text="{Binding JednostkaError}" Foreground="Red" FontSize="11"
+                       Margin="150,0,0,8" Visibility="{Binding JednostkaError, Converter={StaticResource StringToVisibilityConverter}}"/>
 
-            <Grid Grid.Row="5" Margin="0,0,0,15">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="150"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Text="Lokalizacja:" Grid.Column="0" VerticalAlignment="Center"/>
-                <TextBox x:Name="LokalizacjaTextBox" Grid.Column="1"/>
-            </Grid>
+			<!-- LOKALIZACJA -->
+			<Grid Grid.Row="9" Margin="0,0,0,2">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="150"/>
+					<ColumnDefinition Width="*"/>
+				</Grid.ColumnDefinitions>
+				<TextBlock Text="Lokalizacja:" Grid.Column="0" VerticalAlignment="Center"/>
+				<TextBox Grid.Column="1" Height="32" Padding="5,0" VerticalContentAlignment="Center"
+                         Text="{Binding Lokalizacja, UpdateSourceTrigger=PropertyChanged}"/>
+			</Grid>
+			<TextBlock Grid.Row="10" Text="{Binding LokalizacjaError}" Foreground="Red" FontSize="11"
+                       Margin="150,0,0,8" Visibility="{Binding LokalizacjaError, Converter={StaticResource StringToVisibilityConverter}}"/>
 
-            <StackPanel Grid.Row="7" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
-                <Button Content="Zapisz" Margin="0,0,10,0" Background="#4CAF50" Click="SaveButton_Click"/>
-                <Button Content="Anuluj" Background="#9E9E9E" Click="CancelButton_Click"/>
-            </StackPanel>
-        </Grid>
-    </Grid>
+			<!-- PRZYCISKI -->
+			<StackPanel Grid.Row="12" Orientation="Horizontal"
+                        HorizontalAlignment="Center" Margin="0,20,0,0">
+				<Button Content="Zapisz" Margin="0,0,10,0"
+                        Background="#4CAF50" Foreground="White"
+                        Padding="20,8" Command="{Binding SaveCommand}"/>
+				<Button Content="Anuluj"
+                        Background="#9E9E9E" Foreground="White"
+                        Padding="20,8" Command="{Binding CancelCommand}"/>
+			</StackPanel>
+		</Grid>
+	</Grid>
 </Window>
